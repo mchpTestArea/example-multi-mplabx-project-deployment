@@ -10,7 +10,7 @@ pipeline {
 	environment {
 	    NOTIFICATION_EMAIL = 'e50beea8.microchip.com@amer.teams.ms'	
 		//This is the BitBucket source repo URL to be deployed
-		BITBUCKET_SOURCE_URL = 'https://bitbucket.microchip.com/scm/~i50992/example-multiple-project-portal-deploy.git'
+		BITBUCKET_SOURCE_URL = 'https://bitbucket.microchip.com/scm/~i50992/example-multi-mplabx-project-deployment.git'
 		BITBUCKET_CREDENTIAL_ID = 'BITBUCKET_INTERNAL_TOKEN'
 		GITHUB_PRODUCTION_DEPLOY_URL ='https://github.com/microchip-pic-avr-examples'
 		GITHUB_TEST_DEPLOY_URL ='https://github.com/mchpTestArea'
