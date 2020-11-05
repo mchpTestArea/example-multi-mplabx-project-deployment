@@ -61,11 +61,7 @@ pipeline {
                     String [] topics = jsonObj.content.keywords
                     def asString = topics.join(", ")
                     asString = asString.replace("\n", "").replace(" ", "").replace("\t", "").replace("\r", "")
-					Boolean visibility =  true
-					if(env.GITHUB_URL == env.GITHUB_PRODUCTION_DEPLOY_URL)
-					{
-					   visibility = false
-					}
+					Boolean visibility =  false
                     
                     withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
                         execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rpo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=${jsonObj.content.projectName} -rpd=\"${jsonObj.content.shortDescription}\" -rpt=${asString} -rpp=${visibility}")
@@ -85,9 +81,6 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
                         execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -deploy=true -gpat=$PASS -dgid=$USER_NAME -dburl=${env.BITBUCKET_SOURCE_URL} -dgurl=${gitHubUrl} -dm=true")
                     }
-                    
-                    execute("ls -la")
-                    execute("cd deploy_sandbox && ls -la")
                 }
             }
         }
@@ -97,8 +90,7 @@ pipeline {
              steps{
                 script{
                      def jsonObj = readJsonObject();
-                     execute("ls -la")
-                     execute("cd deploy_sandbox && ls -la")
+
                      withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
                          execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rlo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=\"${jsonObj.content.projectName}\" -rltv=\"${jsonObj.content.version}\" -rltt=\"${jsonObj.content.version}\" -rlnp=${env.CHANGE_LOG_PATH}")
                     }
@@ -228,9 +220,9 @@ def projectRootFolderPathGet(String folderPath, Boolean frontSlash) {
         splitList = folderPath.split('/')
     }
 
-    projectName = (splitList[splitList.size() - 1])      
+    projectName = (splitList[splitList.size() - 2])      
     
-    return folderPath.replace(projectName, "")    
+    return projectName   
 }
 
 def multipleProjectListGet() {
@@ -241,8 +233,6 @@ def multipleProjectListGet() {
     println dir
     
     dir = dir.split('\n')
-    
-    println dir
     
     def filePathStr = ""
     
