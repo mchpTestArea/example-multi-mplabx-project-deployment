@@ -119,11 +119,13 @@ pipeline {
                         def jsonObjData = readJsonObject();
                         
                         projectFolderList.each { item -> 
-                                                    
-                            def jsonObj = readJsonObject(item + ".main-meta/main.json");			
+                            
+                            def itemSplitList = item.split('\\|')
+                            
+                            def jsonObj = readJsonObject(itemSplitList[0] + "/.main-meta/main.json");			
                             def version = jsonObj.content.version
                             
-                            def projectPath = item.replace(".", "").replace("/", "")
+                            def projectPath = itemSplitList[1].replace(".", "").replace("/", "")
                             
                             String[] splitPreTag = "${env.GITHUB_URL}".split("/")
                             def gitHubOrg = (splitPreTag[splitPreTag.size() - 1])
@@ -220,9 +222,9 @@ def projectRootFolderPathGet(String folderPath, Boolean frontSlash) {
         splitList = folderPath.split('/')
     }
 
-    projectName = (splitList[splitList.size() - 2])      
+    projectName = (splitList[splitList.size() - 1])      
     
-    return projectName   
+    return folderPath.replace(projectName, "") + "|" + (splitList[splitList.size() - 2])     
 }
 
 def multipleProjectListGet() {
@@ -233,6 +235,8 @@ def multipleProjectListGet() {
     println dir
     
     dir = dir.split('\n')
+    
+    println dir
     
     def filePathStr = ""
     
