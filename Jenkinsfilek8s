@@ -136,8 +136,6 @@ pipeline {
                             println cmdArgs                            
                             
                             execute("cd tool-portal-client-launcher && node portalLauncher.js -app=../bundles/portal-client-cli-linux -srv=\"staging\" -cmd=\"uploadGitHub ${cmdArgs}\"")     
-
-                            sleep 30s
                         }                      
                     } else {
                         def jsonObj = readJsonObject();			
