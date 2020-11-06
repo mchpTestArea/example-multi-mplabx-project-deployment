@@ -76,7 +76,7 @@ pipeline {
                     gitHubUrl = gitHubUrl.replace(" ", "").replace("\n", "")
                     
                     withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
-                        execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -deploy=true -gpat=$PASS -dgid=$USER_NAME -dburl=${env.BITBUCKET_SOURCE_URL} -dgurl=${gitHubUrl} -dm=true")
+                        execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -deploy=true -gpat=$PASS -dgid=$USER_NAME -dburl=${env.BITBUCKET_SOURCE_URL} -dgurl=${gitHubUrl}")
                     }
                 }
             }
