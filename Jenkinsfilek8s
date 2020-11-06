@@ -11,12 +11,9 @@ pipeline {
 	    NOTIFICATION_EMAIL = 'e50beea8.microchip.com@amer.teams.ms'	
 		//This is the BitBucket source repo URL to be deployed
 		BITBUCKET_SOURCE_URL = 'https://bitbucket.microchip.com/scm/~i50992/example-multi-mplabx-project-deployment.git'
-		BITBUCKET_CREDENTIAL_ID = 'BITBUCKET_INTERNAL_TOKEN'
-		GITHUB_PRODUCTION_DEPLOY_URL ='https://github.com/microchip-pic-avr-examples'
 		GITHUB_TEST_DEPLOY_URL ='https://github.com/mchpTestArea'
 		//Selects the deployment URL(production or test) based on the merge target branch, selects "microchip-pic-avr-examples" if target branch is "master" , if target branch is "test_deploy" selects "mchpTestArea" else null
 		GITHUB_URL = "${GITHUB_TEST_DEPLOY_URL}"
-		GITHUB_PRODUCTION_DEPLOY_CREDENTIAL_ID ='GITHUB_MICROCHIP_PIC_AVR_EXAMPLES_TOKEN'
 		GITHUB_TEST_DEPLOY_CREDENTIAL_ID ='GITHUB_PIC_AVR_TEST_TOKEN'
 		//Gets the Github credential id based on the deployment organization
 	    GITHUB_CREDENTIAL_ID = 'GITHUB_PIC_AVR_TEST_TOKEN'
@@ -46,7 +43,7 @@ pipeline {
 	   	stage('GitHub tool clone'){
             steps{
                script{
-                    execute("git clone https://bitbucket.microchip.com/scm/citd/tool-github-deploy.git")
+                    execute("git clone ${env.DEPLOY_TOOL_URL}")
                     execute("cd tool-github-deploy && git checkout develop")
                 }
             }
@@ -241,15 +238,17 @@ def multipleProjectListGet() {
     def filePathStr = ""
     
     dir.each { str ->
-        if(str.indexOf("nbproject/configurations.xml") > -1) {
-            filePathStr = str.replace("/nbproject/configurations.xml", "")
-            filePathStr = projectRootFolderPathGet(filePathStr, false)
-            list.add(filePathStr)
-        
-        } else if(str.indexOf("nbproject\\configurations.xml") > -1) {
-            filePathStr = str.replace("\\nbproject\\configurations.xml", "")
-            filePathStr = projectRootFolderPathGet(filePathStr, true)
-            list.add(filePathStr)
+        if(str.indexOf("deploy_sandbox") < 0) {
+            if(str.indexOf("nbproject/configurations.xml") > -1) {
+                filePathStr = str.replace("/nbproject/configurations.xml", "")
+                filePathStr = projectRootFolderPathGet(filePathStr, false)
+                list.add(filePathStr)
+            
+            } else if(str.indexOf("nbproject\\configurations.xml") > -1) {
+                filePathStr = str.replace("\\nbproject\\configurations.xml", "")
+                filePathStr = projectRootFolderPathGet(filePathStr, true)
+                list.add(filePathStr)
+            }
         }
     }
     
