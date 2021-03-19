@@ -128,7 +128,7 @@ pipeline {
 							
 							println metaDataPath
                             
-							def jsonObj = readJsonObject(itemSplitList[0] + "/.main-meta/main.json");			
+							def jsonObj = readJsonObject(metaDataPath);			
                             def version = jsonObj.content.version
                             
                             def projectPath = itemSplitList[1].replace(".", "").replace("/", "")
@@ -225,8 +225,7 @@ def multiProjectMetaDataJsonFilePathGet(String projectPath) {
 
     dir.each { str ->
         if(str.indexOf(projectPath) > -1) {
-			println str
-			println "Test ---->"
+			return str
         }
     }
 	
