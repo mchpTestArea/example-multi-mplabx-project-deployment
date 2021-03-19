@@ -223,8 +223,8 @@ def multiProjectMetaDataJsonFilePathGet(String projectPath) {
 	def filePathStr = ""
 
     dir.each { str ->
-		println str
-        if(str.indexOf("main.json") > -1) {
+		//println str
+        if(str.indexOf("projectPath") > -1) {
 			println str
 			println "Test ---->"
         }
