@@ -226,7 +226,7 @@ def multiProjectMetaDataJsonFilePathGet(String projectPath) {
 		println str
         if(str.indexOf("main.json") > -1) {
 			println str
-			return filePathStr;
+			println "Test ---->"
         }
     }
 	
