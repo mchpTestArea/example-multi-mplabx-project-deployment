@@ -35,70 +35,70 @@ pipeline {
             }
         }
 		
-        // stage('Build') {
-        //     steps {
-        //         script {
-        //            execute("git clone https://bitbucket.microchip.com/scm/citd/tool-mplabx-c-build.git")
-        //            execute("cd ./tool-mplabx-c-build && node buildLauncher.js sp=../ rp=./output genMK=true")
-        //        }
-        //     }
-        // }
-		// 
-        // // Cloning the tool used for GitHub deployment
-	   	// stage('GitHub tool clone'){
-        //     steps{
-        //        script{
-        //             execute("git clone ${env.DEPLOY_TOOL_URL}")
-        //             execute("cd tool-github-deploy && git checkout develop")
-        //         }
-        //     }
-        // }
-        // 
-        // // GitHub repo creation 
-	    // stage('GitHub Repo Creation') {
-        //     steps{
-        //         script{
-        //             def jsonObj = readJsonObject();
-        //             
-        //             String [] topics = jsonObj.content.keywords
-        //             def asString = topics.join(", ")
-        //             asString = asString.replace("\n", "").replace(" ", "").replace("\t", "").replace("\r", "")
-		// 			Boolean visibility =  false
-        //             
-        //             withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
-        //                 execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rpo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=${jsonObj.content.projectName} -rpd=\"${jsonObj.content.shortDescription}\" -rpt=${asString} -rpp=${visibility}")
-        //             }
-        //         }
-        //     }
-        // } 
-        // 
-	    // // Deploying the code to GitHub 
-		// stage('GitHub Deploy Source'){
-        //     steps{
-        //         script{
-        //             def jsonObj = readJsonObject();
-        //             def gitHubUrl = "${env.GITHUB_URL}" + "/" + jsonObj.content.projectName
-        //             gitHubUrl = gitHubUrl.replace(" ", "").replace("\n", "")
-        //             
-        //             withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
-        //                 execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -deploy=true -gpat=$PASS -dgid=$USER_NAME -dburl=${env.BITBUCKET_SOURCE_URL} -dgurl=${gitHubUrl}")
-        //             }
-        //         }
-        //     }
-        // }
-		// 
-		// // Creating GitHub release  
-		// stage('GitHub release'){
-        //      steps{
-        //         script{
-        //              def jsonObj = readJsonObject();
-		// 
-        //              withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
-        //                  execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rlo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=\"${jsonObj.content.projectName}\" -rltv=\"${jsonObj.content.version}\" -rltt=\"${jsonObj.content.version}\" -rlnp=${env.CHANGE_LOG_PATH}")
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Build') {
+            steps {
+                script {
+                   execute("git clone https://bitbucket.microchip.com/scm/citd/tool-mplabx-c-build.git")
+                   execute("cd ./tool-mplabx-c-build && node buildLauncher.js sp=../ rp=./output genMK=true")
+               }
+            }
+        }
+		
+        // Cloning the tool used for GitHub deployment
+	   	stage('GitHub tool clone'){
+            steps{
+               script{
+                    execute("git clone ${env.DEPLOY_TOOL_URL}")
+                    execute("cd tool-github-deploy && git checkout develop")
+                }
+            }
+        }
+        
+        // GitHub repo creation 
+	    stage('GitHub Repo Creation') {
+            steps{
+                script{
+                    def jsonObj = readJsonObject();
+                    
+                    String [] topics = jsonObj.content.keywords
+                    def asString = topics.join(", ")
+                    asString = asString.replace("\n", "").replace(" ", "").replace("\t", "").replace("\r", "")
+					Boolean visibility =  false
+                    
+                    withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
+                        execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rpo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=${jsonObj.content.projectName} -rpd=\"${jsonObj.content.shortDescription}\" -rpt=${asString} -rpp=${visibility}")
+                    }
+                }
+            }
+        } 
+        
+	    // Deploying the code to GitHub 
+		stage('GitHub Deploy Source'){
+            steps{
+                script{
+                    def jsonObj = readJsonObject();
+                    def gitHubUrl = "${env.GITHUB_URL}" + "/" + jsonObj.content.projectName
+                    gitHubUrl = gitHubUrl.replace(" ", "").replace("\n", "")
+                    
+                    withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
+                        execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -deploy=true -gpat=$PASS -dgid=$USER_NAME -dburl=${env.BITBUCKET_SOURCE_URL} -dgurl=${gitHubUrl}")
+                    }
+                }
+            }
+        }
+		
+		// Creating GitHub release  
+		stage('GitHub release'){
+             steps{
+                script{
+                     def jsonObj = readJsonObject();
+		
+                     withCredentials([usernamePassword(credentialsId: "${env.GITHUB_CREDENTIAL_ID}", passwordVariable: 'PASS', usernameVariable: 'USER_NAME')]) {
+                         execute("python tool-github-deploy/tool-github-deploy/tool-github-deploy.py -rlo=true -gpat=$PASS -rporg=${env.GITHUB_URL} -rpn=\"${jsonObj.content.projectName}\" -rltv=\"${jsonObj.content.version}\" -rltt=\"${jsonObj.content.version}\" -rlnp=${env.CHANGE_LOG_PATH}")
+                    }
+                }
+            }
+        }
 		
 		//Deploying the Github content to portal
 		stage('Portal-Deploy') {
