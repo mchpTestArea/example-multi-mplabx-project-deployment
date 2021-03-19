@@ -225,7 +225,7 @@ def multiProjectMetaDataJsonFilePathGet(String projectPath) {
 
     dir.each { str ->
         if(str.indexOf(projectPath) > -1) {
-			return str
+			filePathStr = str
         }
     }
 	
