@@ -217,12 +217,13 @@ String readJsonObject(String metaDataFileName) {
 }
 
 def multiProjectMetaDataJsonFilePathGet(String projectPath) {
-	dir = sh(script: "find -name \"${projectPath}\"", returnStdout: true).trim()
+	dir = sh(script: "find -name \"main.json\"", returnStdout: true).trim()
     dir = dir.split('\n')
 	
 	def filePathStr = ""
 
     dir.each { str ->
+		println str
         if(str.indexOf("main.json") > -1) {
 			println str
 			return filePathStr;
